@@ -75,7 +75,7 @@ const getAllNote = async(req,res,next)=>{
     
     const userId = req.user.id;
     const page = req.query.page || 1;
-    const limit = req.query.limit || 1;
+    const limit = req.query.limit || 9;
     const skip = (page - 1) * limit;
    
     try{

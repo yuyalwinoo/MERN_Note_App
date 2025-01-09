@@ -7,6 +7,11 @@ import ShowMessage from '../../components/showMessage/ShowMessage';
 import { MdClose } from 'react-icons/md';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { saveNote, updateNote } from '../../api/notes';
+// import { MdMark } from 'react-icons/md'
+import { cardBgColor } from '../../utils/data';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+
 
 const AddEditNote = ({onClose,openAddEditModal}) => {
 	
@@ -15,7 +20,8 @@ const AddEditNote = ({onClose,openAddEditModal}) => {
 	const methods = useForm();
 	const defaultValues = {
 		title:openAddEditModal?.data?.title || '',
-		content: openAddEditModal?.data?.content || ''
+		content: openAddEditModal?.data?.content || '',
+		backgroundColor: openAddEditModal?.data?.backgroundColor || cardBgColor[0]["color"]
 	};
 	//console.log("defaultValues",defaultValues)
 
@@ -23,11 +29,13 @@ const AddEditNote = ({onClose,openAddEditModal}) => {
 		handleSubmit,
 		setError,
 		reset,
+		setValue,
+		watch,
 		formState: {errors, isSubmitting} } = useForm({
 			defaultValues,
 			resolver:zodResolver(noteSchema)
 		});
-	
+		
 	const saveMutation = useMutation({
 		mutationFn: saveNote,
 		onSuccess: () => {
@@ -71,13 +79,13 @@ const AddEditNote = ({onClose,openAddEditModal}) => {
 		  reset(openAddEditModal.data); 
 		}
 	}, [openAddEditModal, reset]);
-
+	console.log("errors",errors)
 	return (
-		<div className='relative'>
+		<div className='relative h-96 overflow-x-hidden overflow-y-auto px-5'>
 			<button type='button' className='w-10 h-10 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-slate-50' onClick={onClose}>
 				<MdClose className='text-xl text-slate-400'/>
 			</button>
-			<FormProvider {...methods}>
+			{/* <FormProvider {...methods}> */}
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className='flex flex-col gap-2'>
 						<label className='input-label'>TITLE</label>
@@ -101,6 +109,30 @@ const AddEditNote = ({onClose,openAddEditModal}) => {
 							errors.content && <ShowMessage message={errors.content.message} flag={"error"}/>
 						}
 					</div>
+					<div className='mt-3'>
+						<label className='input-label'>BACKGROUND COLOR</label>
+						<input
+							type="hidden"
+							{...register("backgroundColor")}
+						/>
+						<div className='grid grid-cols-3 md:grid-cols-5'>
+							{
+								cardBgColor.map(item=>(
+									<div key={item.id} 
+										className={`flex justify-center items-center h-10 w-12 rounded-md cursor-pointer backdrop-blur-lg ${item.color}`}
+										onClick={() => setValue("backgroundColor", item.color)}>
+											{
+												watch("backgroundColor") === item.color ? <FontAwesomeIcon className='' icon={faCircleCheck} /> : ""
+											}
+											
+									</div>
+								))
+							}
+						</div>
+						
+					</div>
+					
+
 
 					{/* <div className='mt-3'>
 						<label className='input-label'>TAGS</label>
@@ -109,10 +141,12 @@ const AddEditNote = ({onClose,openAddEditModal}) => {
 							errors.tags && <ShowMessage message={errors.tags.message} flag={"error"}/>
 						}
 					</div> */}
-
-					<button type='submit' className='font-medium p-3 mt-5 btn-primary'>ADD</button>
+					<div className='mx-auto w-1/6'>
+						<button type='submit' className='font-medium p-3 mt-5 btn-primary '>ADD</button>
+					</div>
+					
 				</form>
-			</FormProvider>
+			{/* </FormProvider> */}
 		</div>
 	)
 }

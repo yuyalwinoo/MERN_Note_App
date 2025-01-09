@@ -3,11 +3,11 @@ import NoteCard from '../../components/cards/NoteCard'
 import { MdAdd } from 'react-icons/md'
 import AddEditNote from './AddEditNote'
 import Modal from 'react-modal'
-import axiosInstance from '../../utils/axiosInstance'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { deleteNote, fetchNoteById, fetchNotes } from '../../api/notes'
 import ConfirmModal from '../../components/showConfirmAlert/ConfirmModal'
 import Paginate from '../../components/pagination/Paginate'
+import SetValue from '../test/SetValue'
 
 const Home = () => {
 	const queryClient = useQueryClient();
@@ -91,11 +91,11 @@ const Home = () => {
 		}
 	},[note])
 	
-	// console.log("note home",data?.data.pageCount)
+	 console.log("note home",data)
 
 	return (
 		<>
-			<div className='container mx-auto px-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 mt-8'>
+			<div className='container mx-auto px-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 mt-8 mb-20'>
 				{
 					data?.data.notes.map(note=>(
 						<NoteCard 
@@ -104,6 +104,7 @@ const Home = () => {
 						title={note.title}
 						date={note.updatedAt}
 						content={note.content}
+						backgroundColor={note.backgroundColor}
 						tags={'#text'}
 						isPinned={note.isPinned}
 						onEdit={onEdit}
@@ -114,30 +115,17 @@ const Home = () => {
 						
 			</div>
 
-			{/* <div className="pagination">
-				<button 
-				onClick={() => setPage(data?.data.page - 1)} 
-				disabled={data?.data.page === 1}
-				>
-				Previous
-				</button>
-				
-				<span>{data?.data.page} / {data?.data.pageCount}</span>
-				
-				<button 
-				onClick={() => setPage(page + 1)} 
-				disabled={data?.data.page === data?.data.pageCount}
-				>
-				Next
-				</button>
-			</div> */}
 			{
 				data?.data.pageCount > 1 &&
-				<Paginate page={data?.data.page}pageCount={data?.data.pageCount} setPage={setPage}/>
+					<Paginate page={data?.data.page} 
+						pageCount={data?.data.pageCount} 
+						setPage={setPage}
+					/>
+
 			}
 			
 
-			<button type='button' className='h-12 w-12 flex justify-center items-center rounded-2xl bg-primary hover:bg-blue-900 absolute right-10 bottom-10' onClick={addNoteHandler}>
+			<button type='button' className='h-12 w-12 flex justify-center items-center rounded-2xl bg-primary hover:bg-blue-900 right-10 bottom-10 fixed' onClick={addNoteHandler}>
 				<MdAdd className='text-2xl text-white'/>
 			</button>
 
@@ -160,6 +148,8 @@ const Home = () => {
 						onClose={handleOnCloseConfirm} 
 						onConfirm={onConfirmDeleteHandler}/>
 
+			
+						
 		</>
 
 

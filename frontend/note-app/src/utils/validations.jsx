@@ -13,6 +13,6 @@ export const signupSchema = z.object({
 
 export const noteSchema = z.object({
     title: z.string().min(1,{message: "Enter Title"}),
-    content: z.string().min(5,{ message: "Password must be at least 6 characters long" }),
-    // tags: z.string().min(1,{message: "Enter tags"}),
+    content: z.string().min(5,{ message: "context must be at least 5 characters long" }),
+    backgroundColor: z.string().optional(),
 })
